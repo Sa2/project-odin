@@ -11,14 +11,13 @@ object myBuild extends Build {
     id="main",
     base=file("."),
     settings = Project.defaultSettings ++ Seq(
-      scalaVersion := "2.11.2",
+      scalaVersion := "2.11.6",
       libraryDependencies ++= List(
-        "com.typesafe.slick" %% "slick" % "2.1.0",
-        "com.typesafe.slick" %% "slick-codegen" % "2.1.0",
+        "com.typesafe.slick" %% "slick" % "3.0.0",
+        "com.typesafe.slick" %% "slick-codegen" % "3.0.0",
         "org.slf4j" % "slf4j-nop" % "1.6.4",
         "mysql" % "mysql-connector-java" % "5.1.35",
         "org.scala-lang" % "scala-reflect" % scalaVersion.value,
-        "com.h2database" % "h2" % "1.3.170"
       ),
       slick <<= slickCodeGenTask, // register manual sbt command
       sourceGenerators in Compile <+= slickCodeGenTask // register automatic code generation on every compile, remove for only manual use
@@ -32,16 +31,12 @@ object myBuild extends Build {
 
     val url = "jdbc:mysql://localhost/gungnir_db"
     val jdbcDriver = "com.mysql.jdbc.Driver"
-    val slickDriver = "scala.slick.driver.MySQLDriver"
+    val slickDriver = "slick.driver.MySQLDriver"
     val username = "odin"
     val password = "odin"
     val pkg = "models"
 
-    // val url = "jdbc:h2:mem:test;INIT=runscript from 'src/main/sql/create.sql'" // connection info for a pre-populated throw-away, in-memory db for this demo, which is freshly initialized on every run
-    // val jdbcDriver = "org.h2.Driver"
-    // val slickDriver = "scala.slick.driver.H2Driver"
-    // val pkg = "demo2"
-    toError(r.run("scala.slick.codegen.SourceCodeGenerator", cp.files,
+    toError(r.run("slick.codegen.SourceCodeGenerator", cp.files,
       Array(slickDriver, jdbcDriver, url, outputDir, pkg, username, password), s.log))
     val fname = outputDir + "/models/Tables.scala"
     Seq(file(fname))
