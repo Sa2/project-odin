@@ -4,7 +4,7 @@ SET SESSION FOREIGN_KEY_CHECKS=0;
 /* Create Tables */
 
 -- 記事
-CREATE TABLE article
+CREATE TABLE articles
 (
 	id int unsigned NOT NULL AUTO_INCREMENT COMMENT 'id',
 	title varchar(64) NOT NULL COMMENT '記事タイトル',
@@ -19,7 +19,7 @@ CREATE TABLE article
 
 
 -- 新規テーブル
-CREATE TABLE file
+CREATE TABLE files
 (
 	id int unsigned NOT NULL AUTO_INCREMENT COMMENT 'ファイルID',
 	name varchar(256) NOT NULL COMMENT 'ファイル名',
@@ -32,7 +32,7 @@ CREATE TABLE file
 
 
 -- ユーザー情報
-CREATE TABLE user
+CREATE TABLE users
 (
 	id int unsigned NOT NULL AUTO_INCREMENT COMMENT 'id',
 	user_id varchar(32) NOT NULL COMMENT 'ユーザーID',
@@ -50,17 +50,17 @@ CREATE TABLE user
 
 /* Create Foreign Keys */
 
-ALTER TABLE file
+ALTER TABLE files
 	ADD FOREIGN KEY (article_id)
-	REFERENCES article (id)
+	REFERENCES articles (id)
 	ON UPDATE RESTRICT
 	ON DELETE RESTRICT
 ;
 
 
-ALTER TABLE article
+ALTER TABLE articles
 	ADD FOREIGN KEY (posted_user_id)
-	REFERENCES user (id)
+	REFERENCES users (id)
 	ON UPDATE RESTRICT
 	ON DELETE RESTRICT
 ;
