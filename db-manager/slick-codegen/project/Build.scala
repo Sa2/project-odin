@@ -17,7 +17,7 @@ object myBuild extends Build {
         "com.typesafe.slick" %% "slick-codegen" % "3.0.0",
         "org.slf4j" % "slf4j-nop" % "1.6.4",
         "mysql" % "mysql-connector-java" % "5.1.35",
-        "org.scala-lang" % "scala-reflect" % scalaVersion.value,
+        "org.scala-lang" % "scala-reflect" % scalaVersion.value
       ),
       slick <<= slickCodeGenTask, // register manual sbt command
       sourceGenerators in Compile <+= slickCodeGenTask // register automatic code generation on every compile, remove for only manual use

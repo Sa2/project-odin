@@ -14,11 +14,11 @@ trait Tables {
   import slick.jdbc.{GetResult => GR}
 
   /** DDL for all tables. Call .create to execute. */
-  lazy val schema = Article.schema ++ File.schema ++ User.schema
+  lazy val schema = Articles.schema ++ Files.schema ++ Users.schema
   @deprecated("Use .schema instead of .ddl", "3.0")
   def ddl = schema
 
-  /** Entity class storing rows of table Article
+  /** Entity class storing rows of table Articles
    *  @param id Database column id SqlType(INT UNSIGNED), AutoInc, PrimaryKey
    *  @param title Database column title SqlType(VARCHAR), Length(64,true)
    *  @param body Database column body SqlType(LONGTEXT), Length(2147483647,true), Default(None)
@@ -26,17 +26,17 @@ trait Tables {
    *  @param postedUserId Database column posted_user_id SqlType(INT UNSIGNED), Default(None)
    *  @param postDate Database column post_date SqlType(DATETIME)
    *  @param updateDate Database column update_date SqlType(TIMESTAMP) */
-  case class ArticleRow(id: Int, title: String, body: Option[String] = None, isHide: Boolean, postedUserId: Option[Int] = None, postDate: java.sql.Timestamp, updateDate: java.sql.Timestamp)
-  /** GetResult implicit for fetching ArticleRow objects using plain SQL queries */
-  implicit def GetResultArticleRow(implicit e0: GR[Int], e1: GR[String], e2: GR[Option[String]], e3: GR[Boolean], e4: GR[Option[Int]], e5: GR[java.sql.Timestamp]): GR[ArticleRow] = GR{
+  case class ArticlesRow(id: Int, title: String, body: Option[String] = None, isHide: Boolean, postedUserId: Option[Int] = None, postDate: java.sql.Timestamp, updateDate: java.sql.Timestamp)
+  /** GetResult implicit for fetching ArticlesRow objects using plain SQL queries */
+  implicit def GetResultArticlesRow(implicit e0: GR[Int], e1: GR[String], e2: GR[Option[String]], e3: GR[Boolean], e4: GR[Option[Int]], e5: GR[java.sql.Timestamp]): GR[ArticlesRow] = GR{
     prs => import prs._
-    ArticleRow.tupled((<<[Int], <<[String], <<?[String], <<[Boolean], <<?[Int], <<[java.sql.Timestamp], <<[java.sql.Timestamp]))
+    ArticlesRow.tupled((<<[Int], <<[String], <<?[String], <<[Boolean], <<?[Int], <<[java.sql.Timestamp], <<[java.sql.Timestamp]))
   }
-  /** Table description of table article. Objects of this class serve as prototypes for rows in queries. */
-  class Article(_tableTag: Tag) extends Table[ArticleRow](_tableTag, "article") {
-    def * = (id, title, body, isHide, postedUserId, postDate, updateDate) <> (ArticleRow.tupled, ArticleRow.unapply)
+  /** Table description of table articles. Objects of this class serve as prototypes for rows in queries. */
+  class Articles(_tableTag: Tag) extends Table[ArticlesRow](_tableTag, "articles") {
+    def * = (id, title, body, isHide, postedUserId, postDate, updateDate) <> (ArticlesRow.tupled, ArticlesRow.unapply)
     /** Maps whole row to an option. Useful for outer joins. */
-    def ? = (Rep.Some(id), Rep.Some(title), body, Rep.Some(isHide), postedUserId, Rep.Some(postDate), Rep.Some(updateDate)).shaped.<>({r=>import r._; _1.map(_=> ArticleRow.tupled((_1.get, _2.get, _3, _4.get, _5, _6.get, _7.get)))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
+    def ? = (Rep.Some(id), Rep.Some(title), body, Rep.Some(isHide), postedUserId, Rep.Some(postDate), Rep.Some(updateDate)).shaped.<>({r=>import r._; _1.map(_=> ArticlesRow.tupled((_1.get, _2.get, _3, _4.get, _5, _6.get, _7.get)))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
 
     /** Database column id SqlType(INT UNSIGNED), AutoInc, PrimaryKey */
     val id: Rep[Int] = column[Int]("id", O.AutoInc, O.PrimaryKey)
@@ -53,29 +53,29 @@ trait Tables {
     /** Database column update_date SqlType(TIMESTAMP) */
     val updateDate: Rep[java.sql.Timestamp] = column[java.sql.Timestamp]("update_date")
 
-    /** Foreign key referencing User (database name article_ibfk_1) */
-    lazy val userFk = foreignKey("article_ibfk_1", postedUserId, User)(r => Rep.Some(r.id), onUpdate=ForeignKeyAction.NoAction, onDelete=ForeignKeyAction.NoAction)
+    /** Foreign key referencing Users (database name articles_ibfk_1) */
+    lazy val usersFk = foreignKey("articles_ibfk_1", postedUserId, Users)(r => Rep.Some(r.id), onUpdate=ForeignKeyAction.NoAction, onDelete=ForeignKeyAction.NoAction)
   }
-  /** Collection-like TableQuery object for table Article */
-  lazy val Article = new TableQuery(tag => new Article(tag))
+  /** Collection-like TableQuery object for table Articles */
+  lazy val Articles = new TableQuery(tag => new Articles(tag))
 
-  /** Entity class storing rows of table File
+  /** Entity class storing rows of table Files
    *  @param id Database column id SqlType(INT UNSIGNED), AutoInc, PrimaryKey
    *  @param name Database column name SqlType(VARCHAR), Length(256,true)
    *  @param fileBlob Database column file_blob SqlType(LONGBLOB)
    *  @param articleId Database column article_id SqlType(INT UNSIGNED)
    *  @param uploadDate Database column upload_date SqlType(TIMESTAMP) */
-  case class FileRow(id: Int, name: String, fileBlob: java.sql.Blob, articleId: Int, uploadDate: java.sql.Timestamp)
-  /** GetResult implicit for fetching FileRow objects using plain SQL queries */
-  implicit def GetResultFileRow(implicit e0: GR[Int], e1: GR[String], e2: GR[java.sql.Blob], e3: GR[java.sql.Timestamp]): GR[FileRow] = GR{
+  case class FilesRow(id: Int, name: String, fileBlob: java.sql.Blob, articleId: Int, uploadDate: java.sql.Timestamp)
+  /** GetResult implicit for fetching FilesRow objects using plain SQL queries */
+  implicit def GetResultFilesRow(implicit e0: GR[Int], e1: GR[String], e2: GR[java.sql.Blob], e3: GR[java.sql.Timestamp]): GR[FilesRow] = GR{
     prs => import prs._
-    FileRow.tupled((<<[Int], <<[String], <<[java.sql.Blob], <<[Int], <<[java.sql.Timestamp]))
+    FilesRow.tupled((<<[Int], <<[String], <<[java.sql.Blob], <<[Int], <<[java.sql.Timestamp]))
   }
-  /** Table description of table file. Objects of this class serve as prototypes for rows in queries. */
-  class File(_tableTag: Tag) extends Table[FileRow](_tableTag, "file") {
-    def * = (id, name, fileBlob, articleId, uploadDate) <> (FileRow.tupled, FileRow.unapply)
+  /** Table description of table files. Objects of this class serve as prototypes for rows in queries. */
+  class Files(_tableTag: Tag) extends Table[FilesRow](_tableTag, "files") {
+    def * = (id, name, fileBlob, articleId, uploadDate) <> (FilesRow.tupled, FilesRow.unapply)
     /** Maps whole row to an option. Useful for outer joins. */
-    def ? = (Rep.Some(id), Rep.Some(name), Rep.Some(fileBlob), Rep.Some(articleId), Rep.Some(uploadDate)).shaped.<>({r=>import r._; _1.map(_=> FileRow.tupled((_1.get, _2.get, _3.get, _4.get, _5.get)))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
+    def ? = (Rep.Some(id), Rep.Some(name), Rep.Some(fileBlob), Rep.Some(articleId), Rep.Some(uploadDate)).shaped.<>({r=>import r._; _1.map(_=> FilesRow.tupled((_1.get, _2.get, _3.get, _4.get, _5.get)))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
 
     /** Database column id SqlType(INT UNSIGNED), AutoInc, PrimaryKey */
     val id: Rep[Int] = column[Int]("id", O.AutoInc, O.PrimaryKey)
@@ -88,13 +88,13 @@ trait Tables {
     /** Database column upload_date SqlType(TIMESTAMP) */
     val uploadDate: Rep[java.sql.Timestamp] = column[java.sql.Timestamp]("upload_date")
 
-    /** Foreign key referencing Article (database name file_ibfk_1) */
-    lazy val articleFk = foreignKey("file_ibfk_1", articleId, Article)(r => r.id, onUpdate=ForeignKeyAction.NoAction, onDelete=ForeignKeyAction.NoAction)
+    /** Foreign key referencing Articles (database name files_ibfk_1) */
+    lazy val articlesFk = foreignKey("files_ibfk_1", articleId, Articles)(r => r.id, onUpdate=ForeignKeyAction.NoAction, onDelete=ForeignKeyAction.NoAction)
   }
-  /** Collection-like TableQuery object for table File */
-  lazy val File = new TableQuery(tag => new File(tag))
+  /** Collection-like TableQuery object for table Files */
+  lazy val Files = new TableQuery(tag => new Files(tag))
 
-  /** Entity class storing rows of table User
+  /** Entity class storing rows of table Users
    *  @param id Database column id SqlType(INT UNSIGNED), AutoInc, PrimaryKey
    *  @param userId Database column user_id SqlType(VARCHAR), Length(32,true)
    *  @param password Database column password SqlType(VARCHAR), Length(256,true)
@@ -102,17 +102,17 @@ trait Tables {
    *  @param isLock Database column is_lock SqlType(BIT)
    *  @param registerDate Database column register_date SqlType(DATETIME)
    *  @param updateDate Database column update_date SqlType(TIMESTAMP) */
-  case class UserRow(id: Int, userId: String, password: String, name: String, isLock: Boolean, registerDate: java.sql.Timestamp, updateDate: java.sql.Timestamp)
-  /** GetResult implicit for fetching UserRow objects using plain SQL queries */
-  implicit def GetResultUserRow(implicit e0: GR[Int], e1: GR[String], e2: GR[Boolean], e3: GR[java.sql.Timestamp]): GR[UserRow] = GR{
+  case class UsersRow(id: Int, userId: String, password: String, name: String, isLock: Boolean, registerDate: java.sql.Timestamp, updateDate: java.sql.Timestamp)
+  /** GetResult implicit for fetching UsersRow objects using plain SQL queries */
+  implicit def GetResultUsersRow(implicit e0: GR[Int], e1: GR[String], e2: GR[Boolean], e3: GR[java.sql.Timestamp]): GR[UsersRow] = GR{
     prs => import prs._
-    UserRow.tupled((<<[Int], <<[String], <<[String], <<[String], <<[Boolean], <<[java.sql.Timestamp], <<[java.sql.Timestamp]))
+    UsersRow.tupled((<<[Int], <<[String], <<[String], <<[String], <<[Boolean], <<[java.sql.Timestamp], <<[java.sql.Timestamp]))
   }
-  /** Table description of table user. Objects of this class serve as prototypes for rows in queries. */
-  class User(_tableTag: Tag) extends Table[UserRow](_tableTag, "user") {
-    def * = (id, userId, password, name, isLock, registerDate, updateDate) <> (UserRow.tupled, UserRow.unapply)
+  /** Table description of table users. Objects of this class serve as prototypes for rows in queries. */
+  class Users(_tableTag: Tag) extends Table[UsersRow](_tableTag, "users") {
+    def * = (id, userId, password, name, isLock, registerDate, updateDate) <> (UsersRow.tupled, UsersRow.unapply)
     /** Maps whole row to an option. Useful for outer joins. */
-    def ? = (Rep.Some(id), Rep.Some(userId), Rep.Some(password), Rep.Some(name), Rep.Some(isLock), Rep.Some(registerDate), Rep.Some(updateDate)).shaped.<>({r=>import r._; _1.map(_=> UserRow.tupled((_1.get, _2.get, _3.get, _4.get, _5.get, _6.get, _7.get)))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
+    def ? = (Rep.Some(id), Rep.Some(userId), Rep.Some(password), Rep.Some(name), Rep.Some(isLock), Rep.Some(registerDate), Rep.Some(updateDate)).shaped.<>({r=>import r._; _1.map(_=> UsersRow.tupled((_1.get, _2.get, _3.get, _4.get, _5.get, _6.get, _7.get)))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
 
     /** Database column id SqlType(INT UNSIGNED), AutoInc, PrimaryKey */
     val id: Rep[Int] = column[Int]("id", O.AutoInc, O.PrimaryKey)
@@ -132,6 +132,6 @@ trait Tables {
     /** Uniqueness Index over (userId) (database name user_id) */
     val index1 = index("user_id", userId, unique=true)
   }
-  /** Collection-like TableQuery object for table User */
-  lazy val User = new TableQuery(tag => new User(tag))
+  /** Collection-like TableQuery object for table Users */
+  lazy val Users = new TableQuery(tag => new Users(tag))
 }
