@@ -1,0 +1,33 @@
+@(articles: Seq[models.Tables.ArticlesRow])
+
+@main("記事一覧") {
+
+<div>
+    <a href="@routes.ArticleController.edit()" class="btn btn-success" role="button">新規作成</a>
+</div>
+
+<div class="col-xs-6">
+    <table class="table table-hover">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>タイトル</th>
+            <th>本文</th>
+            <th>&nbsp;</th>
+        </tr>
+        </thead>
+        <tbody>
+        @* 記事の一覧をループで出力 *@
+        @articles.map { article =>
+        <tr>
+            <td>@article.id</td>
+            <td>@article.title</a></td>
+            <td>@article.body</a></td>
+            <td></td>
+        </tr>
+        }
+        </tbody>
+    </table>
+</div>
+
+}
