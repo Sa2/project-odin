@@ -9,6 +9,7 @@ CREATE TABLE articles
 	id int unsigned NOT NULL AUTO_INCREMENT COMMENT 'id',
 	title varchar(64) NOT NULL COMMENT '記事タイトル',
 	body longtext COMMENT '本文',
+	view_count bigint unsigned DEFAULT 0 NOT NULL COMMENT '閲覧数',
 	is_hide boolean NOT NULL COMMENT '非表示化',
 	posted_user_id int unsigned COMMENT '投稿したユーザーID',
 	post_date datetime NOT NULL COMMENT '投稿日',

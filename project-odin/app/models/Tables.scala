@@ -22,21 +22,22 @@ trait Tables {
    *  @param id Database column id SqlType(INT UNSIGNED), AutoInc, PrimaryKey
    *  @param title Database column title SqlType(VARCHAR), Length(64,true)
    *  @param body Database column body SqlType(LONGTEXT), Length(2147483647,true), Default(None)
+   *  @param viewCount Database column view_count SqlType(BIGINT UNSIGNED), Default(0)
    *  @param isHide Database column is_hide SqlType(BIT)
    *  @param postedUserId Database column posted_user_id SqlType(INT UNSIGNED), Default(None)
    *  @param postDate Database column post_date SqlType(DATETIME)
    *  @param updateDate Database column update_date SqlType(TIMESTAMP) */
-  case class ArticlesRow(id: Int, title: String, body: Option[String] = None, isHide: Boolean, postedUserId: Option[Int] = None, postDate: java.sql.Timestamp, updateDate: java.sql.Timestamp)
+  case class ArticlesRow(id: Int, title: String, body: Option[String] = None, viewCount: Long = 0L, isHide: Boolean, postedUserId: Option[Int] = None, postDate: java.sql.Timestamp, updateDate: java.sql.Timestamp)
   /** GetResult implicit for fetching ArticlesRow objects using plain SQL queries */
-  implicit def GetResultArticlesRow(implicit e0: GR[Int], e1: GR[String], e2: GR[Option[String]], e3: GR[Boolean], e4: GR[Option[Int]], e5: GR[java.sql.Timestamp]): GR[ArticlesRow] = GR{
+  implicit def GetResultArticlesRow(implicit e0: GR[Int], e1: GR[String], e2: GR[Option[String]], e3: GR[Long], e4: GR[Boolean], e5: GR[Option[Int]], e6: GR[java.sql.Timestamp]): GR[ArticlesRow] = GR{
     prs => import prs._
-    ArticlesRow.tupled((<<[Int], <<[String], <<?[String], <<[Boolean], <<?[Int], <<[java.sql.Timestamp], <<[java.sql.Timestamp]))
+    ArticlesRow.tupled((<<[Int], <<[String], <<?[String], <<[Long], <<[Boolean], <<?[Int], <<[java.sql.Timestamp], <<[java.sql.Timestamp]))
   }
   /** Table description of table articles. Objects of this class serve as prototypes for rows in queries. */
   class Articles(_tableTag: Tag) extends Table[ArticlesRow](_tableTag, "articles") {
-    def * = (id, title, body, isHide, postedUserId, postDate, updateDate) <> (ArticlesRow.tupled, ArticlesRow.unapply)
+    def * = (id, title, body, viewCount, isHide, postedUserId, postDate, updateDate) <> (ArticlesRow.tupled, ArticlesRow.unapply)
     /** Maps whole row to an option. Useful for outer joins. */
-    def ? = (Rep.Some(id), Rep.Some(title), body, Rep.Some(isHide), postedUserId, Rep.Some(postDate), Rep.Some(updateDate)).shaped.<>({r=>import r._; _1.map(_=> ArticlesRow.tupled((_1.get, _2.get, _3, _4.get, _5, _6.get, _7.get)))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
+    def ? = (Rep.Some(id), Rep.Some(title), body, Rep.Some(viewCount), Rep.Some(isHide), postedUserId, Rep.Some(postDate), Rep.Some(updateDate)).shaped.<>({r=>import r._; _1.map(_=> ArticlesRow.tupled((_1.get, _2.get, _3, _4.get, _5.get, _6, _7.get, _8.get)))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
 
     /** Database column id SqlType(INT UNSIGNED), AutoInc, PrimaryKey */
     val id: Rep[Int] = column[Int]("id", O.AutoInc, O.PrimaryKey)
@@ -44,6 +45,8 @@ trait Tables {
     val title: Rep[String] = column[String]("title", O.Length(64,varying=true))
     /** Database column body SqlType(LONGTEXT), Length(2147483647,true), Default(None) */
     val body: Rep[Option[String]] = column[Option[String]]("body", O.Length(2147483647,varying=true), O.Default(None))
+    /** Database column view_count SqlType(BIGINT UNSIGNED), Default(0) */
+    val viewCount: Rep[Long] = column[Long]("view_count", O.Default(0L))
     /** Database column is_hide SqlType(BIT) */
     val isHide: Rep[Boolean] = column[Boolean]("is_hide")
     /** Database column posted_user_id SqlType(INT UNSIGNED), Default(None) */
