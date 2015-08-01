@@ -9,6 +9,8 @@ object Tables extends {
 trait Tables {
   val profile: slick.driver.JdbcProfile
   import profile.api._
+  import com.github.tototoshi.slick.MySQLJodaSupport._
+  import org.joda.time.DateTime
   import slick.model.ForeignKeyAction
   // NOTE: GetResult mappers for plain SQL are only generated for tables where Slick knows how to map the types of all columns.
   import slick.jdbc.{GetResult => GR}
@@ -27,11 +29,11 @@ trait Tables {
    *  @param postedUserId Database column posted_user_id SqlType(INT UNSIGNED), Default(None)
    *  @param postDate Database column post_date SqlType(DATETIME)
    *  @param updateDate Database column update_date SqlType(TIMESTAMP) */
-  case class ArticlesRow(id: Int, title: String, body: Option[String] = None, viewCount: Long = 0L, isHide: Boolean, postedUserId: Option[Int] = None, postDate: java.sql.Timestamp, updateDate: java.sql.Timestamp)
+  case class ArticlesRow(id: Int, title: String, body: Option[String] = None, viewCount: Long = 0L, isHide: Boolean, postedUserId: Option[Int] = None, postDate: DateTime, updateDate: DateTime)
   /** GetResult implicit for fetching ArticlesRow objects using plain SQL queries */
-  implicit def GetResultArticlesRow(implicit e0: GR[Int], e1: GR[String], e2: GR[Option[String]], e3: GR[Long], e4: GR[Boolean], e5: GR[Option[Int]], e6: GR[java.sql.Timestamp]): GR[ArticlesRow] = GR{
+  implicit def GetResultArticlesRow(implicit e0: GR[Int], e1: GR[String], e2: GR[Option[String]], e3: GR[Long], e4: GR[Boolean], e5: GR[Option[Int]], e6: GR[DateTime]): GR[ArticlesRow] = GR{
     prs => import prs._
-    ArticlesRow.tupled((<<[Int], <<[String], <<?[String], <<[Long], <<[Boolean], <<?[Int], <<[java.sql.Timestamp], <<[java.sql.Timestamp]))
+    ArticlesRow.tupled((<<[Int], <<[String], <<?[String], <<[Long], <<[Boolean], <<?[Int], <<[DateTime], <<[DateTime]))
   }
   /** Table description of table articles. Objects of this class serve as prototypes for rows in queries. */
   class Articles(_tableTag: Tag) extends Table[ArticlesRow](_tableTag, "articles") {
@@ -52,9 +54,9 @@ trait Tables {
     /** Database column posted_user_id SqlType(INT UNSIGNED), Default(None) */
     val postedUserId: Rep[Option[Int]] = column[Option[Int]]("posted_user_id", O.Default(None))
     /** Database column post_date SqlType(DATETIME) */
-    val postDate: Rep[java.sql.Timestamp] = column[java.sql.Timestamp]("post_date")
+    val postDate: Rep[DateTime] = column[DateTime]("post_date")
     /** Database column update_date SqlType(TIMESTAMP) */
-    val updateDate: Rep[java.sql.Timestamp] = column[java.sql.Timestamp]("update_date")
+    val updateDate: Rep[DateTime] = column[DateTime]("update_date")
 
     /** Foreign key referencing Users (database name articles_ibfk_1) */
     lazy val usersFk = foreignKey("articles_ibfk_1", postedUserId, Users)(r => Rep.Some(r.id), onUpdate=ForeignKeyAction.NoAction, onDelete=ForeignKeyAction.NoAction)
@@ -68,11 +70,11 @@ trait Tables {
    *  @param fileBlob Database column file_blob SqlType(LONGBLOB)
    *  @param articleId Database column article_id SqlType(INT UNSIGNED)
    *  @param uploadDate Database column upload_date SqlType(TIMESTAMP) */
-  case class FilesRow(id: Int, name: String, fileBlob: java.sql.Blob, articleId: Int, uploadDate: java.sql.Timestamp)
+  case class FilesRow(id: Int, name: String, fileBlob: java.sql.Blob, articleId: Int, uploadDate: DateTime)
   /** GetResult implicit for fetching FilesRow objects using plain SQL queries */
-  implicit def GetResultFilesRow(implicit e0: GR[Int], e1: GR[String], e2: GR[java.sql.Blob], e3: GR[java.sql.Timestamp]): GR[FilesRow] = GR{
+  implicit def GetResultFilesRow(implicit e0: GR[Int], e1: GR[String], e2: GR[java.sql.Blob], e3: GR[DateTime]): GR[FilesRow] = GR{
     prs => import prs._
-    FilesRow.tupled((<<[Int], <<[String], <<[java.sql.Blob], <<[Int], <<[java.sql.Timestamp]))
+    FilesRow.tupled((<<[Int], <<[String], <<[java.sql.Blob], <<[Int], <<[DateTime]))
   }
   /** Table description of table files. Objects of this class serve as prototypes for rows in queries. */
   class Files(_tableTag: Tag) extends Table[FilesRow](_tableTag, "files") {
@@ -89,7 +91,7 @@ trait Tables {
     /** Database column article_id SqlType(INT UNSIGNED) */
     val articleId: Rep[Int] = column[Int]("article_id")
     /** Database column upload_date SqlType(TIMESTAMP) */
-    val uploadDate: Rep[java.sql.Timestamp] = column[java.sql.Timestamp]("upload_date")
+    val uploadDate: Rep[DateTime] = column[DateTime]("upload_date")
 
     /** Foreign key referencing Articles (database name files_ibfk_1) */
     lazy val articlesFk = foreignKey("files_ibfk_1", articleId, Articles)(r => r.id, onUpdate=ForeignKeyAction.NoAction, onDelete=ForeignKeyAction.NoAction)
@@ -105,11 +107,11 @@ trait Tables {
    *  @param isLock Database column is_lock SqlType(BIT)
    *  @param registerDate Database column register_date SqlType(DATETIME)
    *  @param updateDate Database column update_date SqlType(TIMESTAMP) */
-  case class UsersRow(id: Int, userId: String, password: String, name: String, isLock: Boolean, registerDate: java.sql.Timestamp, updateDate: java.sql.Timestamp)
+  case class UsersRow(id: Int, userId: String, password: String, name: String, isLock: Boolean, registerDate: DateTime, updateDate: DateTime)
   /** GetResult implicit for fetching UsersRow objects using plain SQL queries */
-  implicit def GetResultUsersRow(implicit e0: GR[Int], e1: GR[String], e2: GR[Boolean], e3: GR[java.sql.Timestamp]): GR[UsersRow] = GR{
+  implicit def GetResultUsersRow(implicit e0: GR[Int], e1: GR[String], e2: GR[Boolean], e3: GR[DateTime]): GR[UsersRow] = GR{
     prs => import prs._
-    UsersRow.tupled((<<[Int], <<[String], <<[String], <<[String], <<[Boolean], <<[java.sql.Timestamp], <<[java.sql.Timestamp]))
+    UsersRow.tupled((<<[Int], <<[String], <<[String], <<[String], <<[Boolean], <<[DateTime], <<[DateTime]))
   }
   /** Table description of table users. Objects of this class serve as prototypes for rows in queries. */
   class Users(_tableTag: Tag) extends Table[UsersRow](_tableTag, "users") {
@@ -128,9 +130,9 @@ trait Tables {
     /** Database column is_lock SqlType(BIT) */
     val isLock: Rep[Boolean] = column[Boolean]("is_lock")
     /** Database column register_date SqlType(DATETIME) */
-    val registerDate: Rep[java.sql.Timestamp] = column[java.sql.Timestamp]("register_date")
+    val registerDate: Rep[DateTime] = column[DateTime]("register_date")
     /** Database column update_date SqlType(TIMESTAMP) */
-    val updateDate: Rep[java.sql.Timestamp] = column[java.sql.Timestamp]("update_date")
+    val updateDate: Rep[DateTime] = column[DateTime]("update_date")
 
     /** Uniqueness Index over (userId) (database name user_id) */
     val index1 = index("user_id", userId, unique=true)
