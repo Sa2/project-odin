@@ -12,12 +12,14 @@ import models.Tables._
 import javax.inject.Inject
 import slick.driver.MySQLDriver.api._
 
+import scala.concurrent.Future
+
 /**
  * Created by Sa2 on 15/07/19.
  */
 
 object ArticleController {
-  case class ArticleForm(id: Int, title: String, body: Option[String], viewCount: Long, isHide: Boolean, postedUserId: Option[Int], postDate: Option[DateTime], updateDate: Option[DateTime])
+  case class ArticleForm(id: Int, title: String, body: Option[String], viewCount: Long, isHide: Boolean, postedUserId: Option[Int], postDate: DateTime, updateDate: DateTime)
   // formから送信されたデータ ⇔ ケースクラスの変換を行う
   val articleForm = Form(
     mapping(
@@ -27,13 +29,16 @@ object ArticleController {
       "viewCount" -> longNumber,
       "isHide" -> boolean,
       "postedUserId" -> optional(number),
-      "postDate" -> optional(jodaDate),
-      "updateDate" -> optional(jodaDate)
+      "postDate" -> jodaDate,
+      "updateDate" -> jodaDate
     )(ArticleForm.apply)(ArticleForm.unapply)
   )
 }
 
 class ArticleController @Inject()(val dbConfigProvider: DatabaseConfigProvider, val messagesApi: MessagesApi) extends Controller with HasDatabaseConfigProvider[JdbcProfile] with I18nSupport {
+
+  // コンパニオンオブジェクトに定義したFormを参照するためにimport
+  import ArticleController._
 
   /**
    * 一覧表示
@@ -49,7 +54,23 @@ class ArticleController @Inject()(val dbConfigProvider: DatabaseConfigProvider, 
   /**
    * 編集画面表示
    */
-  def edit(id: Option[Long]) = TODO
+  def edit(id: Option[Int]) = Action.async { implicit rs =>
+    // リクエストパラメータにIDが存在する場合
+    val form = if(id.isDefined) {
+      db.run(Articles.filter(t => t.id === id.get.bind).result.head).map { article =>
+        articleForm.fill(ArticleForm(article.id, article.title, article.body, article.viewCount, article.isHide, article.postedUserId, article.postDate, article.updateDate))
+      }
+    } else {
+      Future { articleForm }
+    }
+
+    // こんなことせずに値をviewに渡すようにする
+    form.flatMap { form =>
+      db.run(Users.sortBy(_.id).result).map { users =>
+        Ok(views.html.article.edit(form))
+      }
+    }
+  }
 
   /**
    * 登録実行
