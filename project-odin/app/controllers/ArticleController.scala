@@ -64,10 +64,10 @@ class ArticleController @Inject()(val dbConfigProvider: DatabaseConfigProvider, 
       Future { articleForm }
     }
 
-    // こんなことせずに値をviewに渡すようにする
+    // 投稿者IDからユーザー情報を参照
     form.flatMap { form =>
-      db.run(Users.sortBy(_.id).result).map { users =>
-        Ok(views.html.article.edit(form))
+      db.run(Users.filter(t => t.id === form.value.get.postedUserId).result.head).map { user =>
+        Ok(views.html.article.edit(form, user))
       }
     }
   }
