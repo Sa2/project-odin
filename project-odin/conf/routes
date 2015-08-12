@@ -11,10 +11,10 @@ GET     /assets/*file               controllers.Assets.versioned(path="/public",
 # Mapping to /article/list
 GET     /article/list                  controllers.ArticleController.list
 # Mapping to /article/edit or /article/edit?id=<number>
-GET     /article/edit                  controllers.ArticleController.edit(id: Option[Long] ?= None)
+GET     /article/edit                  controllers.ArticleController.edit(id: Option[Int] ?= None)
 # Mapping to /article/create
 POST    /article/create                controllers.ArticleController.create
 # Mapping to /article/update
 POST    /article/update                controllers.ArticleController.update
 # Mapping to /article/remove/<number>
-POST    /article/remove/:id            controllers.ArticleController.remove(id: Long)
+POST    /article/remove/:id            controllers.ArticleController.remove(id: Int)

@@ -21,7 +21,7 @@
         @articles.map { article =>
         <tr>
             <td>@article.id</td>
-            <td>@article.title</a></td>
+            <td><a href="@routes.ArticleController.edit(Some(article.id))">@article.title</a></td>
             <td>@article.body</a></td>
             <td></td>
         </tr>
