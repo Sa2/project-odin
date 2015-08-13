@@ -1,6 +1,6 @@
-package services
+package models.services
 
-import models.Tables._
+import models.dao.Tables._
 import slick.driver.MySQLDriver.api._
 
 /**
