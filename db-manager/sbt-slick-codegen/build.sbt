@@ -22,7 +22,7 @@ lazy val web = (project in file("."))
     slickCodegenDatabasePassword := databasePassword,
     slickCodegenDriver := slick.driver.MySQLDriver,
     slickCodegenJdbcDriver := "com.mysql.jdbc.Driver",
-    slickCodegenOutputPackage := "models",
+    slickCodegenOutputPackage := "models.dao",
     slickCodegenExcludedTables := Seq("schema_version"),
     slickCodegenCodeGenerator := { (model:  m.Model) =>
       new SourceCodeGenerator(model) {

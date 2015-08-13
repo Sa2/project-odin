@@ -1,4 +1,4 @@
-package services
+package models.services
 
 import slick.driver.MySQLDriver.api._
 
