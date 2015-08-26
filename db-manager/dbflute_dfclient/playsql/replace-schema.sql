@@ -32,6 +32,14 @@ CREATE TABLE files
 ) COMMENT = '新規テーブル';
 
 
+-- 接続ステータス確認テーブル
+CREATE TABLE status
+(
+	health varchar(8) NOT NULL COMMENT 'ヘルス',
+	UNIQUE (health)
+) COMMENT = '接続ステータス確認テーブル';
+
+
 -- ユーザー情報
 CREATE TABLE users
 (

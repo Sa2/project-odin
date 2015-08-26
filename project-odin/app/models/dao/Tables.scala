@@ -16,7 +16,7 @@ trait Tables {
   import slick.jdbc.{GetResult => GR}
 
   /** DDL for all tables. Call .create to execute. */
-  lazy val schema = Articles.schema ++ Files.schema ++ Users.schema
+  lazy val schema = Articles.schema ++ Files.schema ++ Status.schema ++ Users.schema
   @deprecated("Use .schema instead of .ddl", "3.0")
   def ddl = schema
 
@@ -98,6 +98,29 @@ trait Tables {
   }
   /** Collection-like TableQuery object for table Files */
   lazy val Files = new TableQuery(tag => new Files(tag))
+
+  /** Entity class storing rows of table Status
+   *  @param health Database column health SqlType(VARCHAR), Length(8,true) */
+  case class StatusRow(health: String)
+  /** GetResult implicit for fetching StatusRow objects using plain SQL queries */
+  implicit def GetResultStatusRow(implicit e0: GR[String]): GR[StatusRow] = GR{
+    prs => import prs._
+    StatusRow(<<[String])
+  }
+  /** Table description of table status. Objects of this class serve as prototypes for rows in queries. */
+  class Status(_tableTag: Tag) extends Table[StatusRow](_tableTag, "status") {
+    def * = health <> (StatusRow, StatusRow.unapply)
+    /** Maps whole row to an option. Useful for outer joins. */
+    def ? = Rep.Some(health).shaped.<>(r => r.map(_=> StatusRow(r.get)), (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
+
+    /** Database column health SqlType(VARCHAR), Length(8,true) */
+    val health: Rep[String] = column[String]("health", O.Length(8,varying=true))
+
+    /** Uniqueness Index over (health) (database name health) */
+    val index1 = index("health", health, unique=true)
+  }
+  /** Collection-like TableQuery object for table Status */
+  lazy val Status = new TableQuery(tag => new Status(tag))
 
   /** Entity class storing rows of table Users
    *  @param id Database column id SqlType(INT UNSIGNED), AutoInc, PrimaryKey
