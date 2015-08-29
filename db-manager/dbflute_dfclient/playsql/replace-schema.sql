@@ -19,6 +19,17 @@ CREATE TABLE articles
 ) COMMENT = '記事';
 
 
+-- 接続ステータス確認テーブル
+CREATE TABLE db_connection_status
+(
+	id int unsigned NOT NULL AUTO_INCREMENT COMMENT 'id',
+	health varchar(8) NOT NULL COMMENT 'ヘルス',
+	PRIMARY KEY (id),
+	UNIQUE (id),
+	UNIQUE (health)
+) COMMENT = '接続ステータス確認テーブル';
+
+
 -- 新規テーブル
 CREATE TABLE files
 (
@@ -30,14 +41,6 @@ CREATE TABLE files
 	PRIMARY KEY (id),
 	UNIQUE (id)
 ) COMMENT = '新規テーブル';
-
-
--- 接続ステータス確認テーブル
-CREATE TABLE status
-(
-	health varchar(8) NOT NULL COMMENT 'ヘルス',
-	UNIQUE (health)
-) COMMENT = '接続ステータス確認テーブル';
 
 
 -- ユーザー情報
