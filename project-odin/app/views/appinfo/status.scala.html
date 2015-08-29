@@ -1,0 +1,32 @@
+@(dbStatus: Boolean)
+
+@* テンプレートで利用可能なヘルパーをインポートする *@
+@import helper._
+
+@main("サービスのステータス") {
+
+
+<div class="col-xs-6">
+    <div>
+        <ul>
+            <li>
+                <div>
+                    <h3>
+                        データベース
+                        @if(dbStatus) {
+                            <span>
+                                オンライン
+                            </span>
+                        } else {
+                            <span>
+                                オフライン
+                            </span>
+                        }
+                    </h3>
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>
+
+}
