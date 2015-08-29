@@ -2,4 +2,4 @@ language: scala
 sudo: false
 script:
   - cd project-odin
-  - activator run
+  - ./activator run
