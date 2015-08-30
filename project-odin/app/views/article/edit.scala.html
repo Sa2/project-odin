@@ -4,6 +4,11 @@
 @import helper._
 
 @main("記事編集") {
+
+    <div>
+        <h1>記事編集</h1>
+    </div>
+
     @* IDがある場合は更新処理、ない場合は登録処理を呼ぶ *@
     @form(articleForm("id").value.map(x => routes.ArticleController.update).getOrElse(routes.ArticleController.create), 'class -> "container", 'role -> "form") {
         <fieldset>
