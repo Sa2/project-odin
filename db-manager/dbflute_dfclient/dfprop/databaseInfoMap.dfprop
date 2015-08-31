@@ -18,8 +18,8 @@ map:{
     ; driver   = com.mysql.jdbc.Driver
     ; url      = jdbc:mysql://localhost/gungnir_db
     ; schema   = gungnir_db
-    ; user     = odin
-    ; password = odin
+    ; user     = travis
+    ; password = 
 
     # /- - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     # o propertiesMap: (NotRequired - Default map:{})

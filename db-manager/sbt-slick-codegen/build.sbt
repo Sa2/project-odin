@@ -2,14 +2,14 @@ import slick.codegen.SourceCodeGenerator
 import slick.{ model => m }
 
 lazy val databaseUrl = "jdbc:mysql://localhost/gungnir_db"
-lazy val databaseUser = "odin"
-lazy val databasePassword = "odin"
+lazy val databaseUser = "travis"
+lazy val databasePassword = ""
 
 lazy val web = (project in file("."))
   .enablePlugins(PlayScala)
   .settings(slickCodegenSettings:_*)
   .settings(
-    scalaVersion := "2.11.6",
+    scalaVersion := "2.11.7",
     libraryDependencies ++= Seq(
       jdbc,
       "com.typesafe.slick" %% "slick" % "3.0.0",
