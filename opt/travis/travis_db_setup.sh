@@ -3,10 +3,15 @@
 # mysql jdbc driverをダウンロードする
 mysql_jdbc_ver=5.1.36
 
+pwd
 mkdir ./tmp
+pwd
 wget http://cdn.mysql.com/Downloads/Connector-J/mysql-connector-java-$mysql_jdbc_ver.zip -P ./tmp
+pwd
 unzip ./tmp/mysql-connector-java-$mysql_jdbc_ver.zip
+pwd
 mv ./tmp/mysql-connector-java-$mysql_jdbc_ver/mysql-connector-java-$mysql_jdbc_ver-bin.jar ./db-manager/dbflute_dfclient/extlib/
+pwd
 rm -rf ./tmp
 
 
