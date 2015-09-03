@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # mysql jdbc driverをダウンロードする
-mysql_jdbc_ver=5.1.35
+mysql_jdbc_ver=5.1.36
 
 mkdir ./tmp
 wget http://cdn.mysql.com/Downloads/Connector-J/mysql-connector-java-$mysql_jdbc_ver.zip -P ./tmp
