@@ -4,7 +4,7 @@ version := "1.0-SNAPSHOT"
 
 lazy val root = (project in file(".")).enablePlugins(PlayScala)
 
-scalaVersion := "2.11.6"
+scalaVersion := "2.11.7"
 
 libraryDependencies ++= Seq(
 //  jdbc,
@@ -38,12 +38,12 @@ lazy val slickCodeGenTask = (sourceManaged, dependencyClasspath in Compile, runn
   val url = "jdbc:mysql://localhost/gungnir_db"
   val jdbcDriver = "com.mysql.jdbc.Driver"
   val slickDriver = "slick.driver.MySQLDriver"
-  val username = "odin"
-  val password = "odin"
+  val username = "travis"
+  val password = ""
   val pkg = "models"
 
   toError(r.run("slick.codegen.SourceCodeGenerator", cp.files,
     Array(slickDriver, jdbcDriver, url, outputDir, pkg, username, password), s.log))
-  val fname = outputDir + "/models/Tables.scala"
+  val fname = outputDir + "/models/dao/Tables.scala"
   Seq(file(fname))
 }
