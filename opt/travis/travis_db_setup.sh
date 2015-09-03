@@ -10,6 +10,7 @@ wget http://cdn.mysql.com/Downloads/Connector-J/mysql-connector-java-$mysql_jdbc
 pwd
 unzip ./tmp/mysql-connector-java-$mysql_jdbc_ver.zip
 pwd
+ls ./tmp/mysql-connector-java-$mysql_jdbc_ver/
 mv ./tmp/mysql-connector-java-$mysql_jdbc_ver/mysql-connector-java-$mysql_jdbc_ver-bin.jar ./db-manager/dbflute_dfclient/extlib/
 pwd
 rm -rf ./tmp
