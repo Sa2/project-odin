@@ -6,6 +6,10 @@ jdk:
 env:
 - PLAY_VERSION=2.4.2
 sudo: false
+before_script:
+  - mysql -e 'create database gungnir_db;'
+  - chmod +x ./opt/travis/travis_db_setup.sh
+  - ./opt/travis/travis_db_setup.sh
 script:
   - cd project-odin
   - ./activator test
