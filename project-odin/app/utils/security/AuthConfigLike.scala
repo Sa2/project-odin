@@ -19,7 +19,7 @@ import viewmodels.UserViewModel
  */
 trait AuthConfigLike extends AuthConfig {
 
-  type UserId = String
+  type Id = String
   type User = UserViewModel
   type Authority = None.type // TODO role type
 
@@ -29,7 +29,7 @@ trait AuthConfigLike extends AuthConfig {
   val userService: UserService
 
 
-  def resolveUser(userId: UserId)(implicit ctx: ExecutionContext): Future[Option[UserViewModel]] = {
+  def resolveUser(userId: Id)(implicit ctx: ExecutionContext): Future[Option[UserViewModel]] = {
     userService.findByUserId(userId)
   }
 

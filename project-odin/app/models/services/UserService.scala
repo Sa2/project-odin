@@ -7,6 +7,7 @@ import models.repositories.UserRepository
 import org.apache.commons.codec.digest.DigestUtils
 import viewmodels.UserViewModel
 
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 
