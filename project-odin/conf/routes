@@ -10,6 +10,8 @@ GET     /assets/*file               controllers.Assets.versioned(path="/public",
 
 GET     /status                        controllers.AppStatusController.status
 
+GET     /dashboard                     controllers.DashboardController.index
+
 # Mapping to /article/list
 GET     /article/list                  controllers.ArticleController.list
 # Mapping to /article/edit or /article/edit?id=<number>
