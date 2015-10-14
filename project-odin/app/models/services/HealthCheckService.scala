@@ -16,6 +16,7 @@ import scala.concurrent.Future
  */
 class HealthCheckService @Inject()(val dbConfigProvider: DatabaseConfigProvider) extends BaseService with HasDatabaseConfigProvider[JdbcProfile] {
 
+  //TODO: DBからデータが取得できない時点で落ちるのでOptionとか使って修正が必要（status.nonEmptyの部分で修正が必要？）
   def getDbAccessStatus: Future[Boolean] = {
     val healthCheckNum: Int = 1
 
