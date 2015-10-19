@@ -3,7 +3,9 @@ package models.services
 import java.util.UUID
 import javax.inject.Inject
 
-import models.repositories.UserRepository
+import com.google.inject.ImplementedBy
+import forms.LoginForm
+import models.repositories.UserRepositoryLike
 import org.apache.commons.codec.digest.DigestUtils
 import viewmodels.UserViewModel
 
@@ -14,19 +16,34 @@ import scala.concurrent.Future
 /**
  * Created by Sa2 on 15/09/21.
  */
-class UserService @Inject()(val userRepository: UserRepository) {
+@ImplementedBy(classOf[UserService])
+trait UserServiceLike {
+  def findByUserId(userId: String): Future[Option[UserViewModel]]
+
+  def authenticate(form: LoginForm): Future[Option[UserViewModel]]
+}
+
+class UserService @Inject()(val userRepository: UserRepositoryLike) extends UserServiceLike {
   import UserService._
 
   def findByUserId(userId: String): Future[Option[UserViewModel]] = {
-    userRepository.findByUserId(userId).map(
-      user => user match {
-        case Some(user) => Some(new UserViewModel(user))
-        case _ => None
+    userRepository.findByUserId(userId).map( userOpt =>
+      userOpt.flatMap { user =>
+        Some(new UserViewModel(user))
       }
     )
   }
 
-  def authenticate(){}
+  def authenticate(form: LoginForm): Future[Option[UserViewModel]] = {
+    userRepository.findByUserId(form.password).map { userOpt =>
+      userOpt.flatMap { user =>
+        if (hashAndStretch(form.password, user.passwordSalt, STRETCH_LOOP_COUNT) == user.password)
+          Some(new UserViewModel(user))
+        else
+          None
+      }
+    }
+  }
 }
 
 object UserService {

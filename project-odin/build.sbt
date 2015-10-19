@@ -8,12 +8,13 @@ scalaVersion := "2.11.7"
 
 libraryDependencies ++= Seq(
 //  jdbc,
-//  cache,
-//  ws,
+  cache,
+  filters,
+  ws,
   specs2 % Test,
-  "com.typesafe.play" %% "play-slick" % "1.0.0",
-//  "com.typesafe.play" %% "play-slick-evolutions" % "1.0.0",
-  "com.typesafe.slick" %% "slick-codegen" % "3.0.0",
+  "com.typesafe.play" %% "play-slick" % "1.1.0",
+  "com.typesafe.play" %% "play-slick-evolutions" % "1.1.0",
+  "com.typesafe.slick" %% "slick-codegen" % "3.1.0",
   "joda-time" % "joda-time" % "2.7",
   "org.joda" % "joda-convert" % "1.7",
   "com.github.tototoshi" %% "slick-joda-mapper" % "2.0.0",

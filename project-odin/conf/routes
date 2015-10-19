@@ -12,6 +12,11 @@ GET     /status                        controllers.AppStatusController.status
 
 GET     /dashboard                     controllers.DashboardController.index
 
+# Mapping authrization
+GET         /login                     controllers.AuthController.index
+POST        /login                     controllers.AuthController.login
+POST        /logout                    controllers.AuthController.logout
+
 # Mapping to /article/list
 GET     /article/list                  controllers.ArticleController.list
 # Mapping to /article/edit or /article/edit?id=<number>

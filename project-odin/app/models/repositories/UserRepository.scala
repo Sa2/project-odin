@@ -2,7 +2,7 @@ package models.repositories
 
 import javax.inject.Inject
 
-import models.dao.Tables
+import com.google.inject.ImplementedBy
 import models.dao.Tables._
 import play.api.db.slick.{HasDatabaseConfigProvider, DatabaseConfigProvider}
 import slick.driver.JdbcProfile
@@ -12,7 +12,13 @@ import scala.concurrent.Future
 /**
  * Created by Sa2 on 15/09/21.
  */
-class UserRepository @Inject()(protected val dbConfigProvider: DatabaseConfigProvider) extends HasDatabaseConfigProvider[JdbcProfile]{
+@ImplementedBy(classOf[UserRepository])
+trait UserRepositoryLike
+  extends HasDatabaseConfigProvider[JdbcProfile] {
+  def findByUserId(userId: String): Future[Option[UsersRow]]
+}
+
+class UserRepository @Inject()(protected val dbConfigProvider: DatabaseConfigProvider) extends UserRepositoryLike {
   import driver.api._
 
   def findByUserId(userId: String): Future[Option[UsersRow]] = {
