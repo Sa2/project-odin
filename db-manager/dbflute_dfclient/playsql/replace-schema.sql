@@ -48,7 +48,8 @@ CREATE TABLE users
 (
 	id int unsigned NOT NULL AUTO_INCREMENT COMMENT 'id',
 	user_id varchar(32) NOT NULL COMMENT 'ユーザーID',
-	password varchar(256) NOT NULL COMMENT 'パスワード',
+	password varchar(64) NOT NULL COMMENT 'パスワード',
+	password_salt varchar(256) NOT NULL COMMENT 'パスワードソルト',
 	name varchar(32) NOT NULL COMMENT '名前',
 	is_lock boolean NOT NULL COMMENT 'アカウントロック',
 	register_date datetime NOT NULL COMMENT '登録日時',

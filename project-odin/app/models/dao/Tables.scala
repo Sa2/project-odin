@@ -128,29 +128,32 @@ trait Tables {
   /** Entity class storing rows of table Users
    *  @param id Database column id SqlType(INT UNSIGNED), AutoInc, PrimaryKey
    *  @param userId Database column user_id SqlType(VARCHAR), Length(32,true)
-   *  @param password Database column password SqlType(VARCHAR), Length(256,true)
+   *  @param password Database column password SqlType(VARCHAR), Length(64,true)
+   *  @param passwordSalt Database column password_salt SqlType(VARCHAR), Length(256,true)
    *  @param name Database column name SqlType(VARCHAR), Length(32,true)
    *  @param isLock Database column is_lock SqlType(BIT)
    *  @param registerDate Database column register_date SqlType(DATETIME)
    *  @param updateDate Database column update_date SqlType(TIMESTAMP) */
-  case class UsersRow(id: Int, userId: String, password: String, name: String, isLock: Boolean, registerDate: DateTime, updateDate: DateTime)
+  case class UsersRow(id: Int, userId: String, password: String, passwordSalt: String, name: String, isLock: Boolean, registerDate: DateTime, updateDate: DateTime)
   /** GetResult implicit for fetching UsersRow objects using plain SQL queries */
   implicit def GetResultUsersRow(implicit e0: GR[Int], e1: GR[String], e2: GR[Boolean], e3: GR[DateTime]): GR[UsersRow] = GR{
     prs => import prs._
-    UsersRow.tupled((<<[Int], <<[String], <<[String], <<[String], <<[Boolean], <<[DateTime], <<[DateTime]))
+    UsersRow.tupled((<<[Int], <<[String], <<[String], <<[String], <<[String], <<[Boolean], <<[DateTime], <<[DateTime]))
   }
   /** Table description of table users. Objects of this class serve as prototypes for rows in queries. */
   class Users(_tableTag: Tag) extends Table[UsersRow](_tableTag, "users") {
-    def * = (id, userId, password, name, isLock, registerDate, updateDate) <> (UsersRow.tupled, UsersRow.unapply)
+    def * = (id, userId, password, passwordSalt, name, isLock, registerDate, updateDate) <> (UsersRow.tupled, UsersRow.unapply)
     /** Maps whole row to an option. Useful for outer joins. */
-    def ? = (Rep.Some(id), Rep.Some(userId), Rep.Some(password), Rep.Some(name), Rep.Some(isLock), Rep.Some(registerDate), Rep.Some(updateDate)).shaped.<>({r=>import r._; _1.map(_=> UsersRow.tupled((_1.get, _2.get, _3.get, _4.get, _5.get, _6.get, _7.get)))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
+    def ? = (Rep.Some(id), Rep.Some(userId), Rep.Some(password), Rep.Some(passwordSalt), Rep.Some(name), Rep.Some(isLock), Rep.Some(registerDate), Rep.Some(updateDate)).shaped.<>({r=>import r._; _1.map(_=> UsersRow.tupled((_1.get, _2.get, _3.get, _4.get, _5.get, _6.get, _7.get, _8.get)))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
 
     /** Database column id SqlType(INT UNSIGNED), AutoInc, PrimaryKey */
     val id: Rep[Int] = column[Int]("id", O.AutoInc, O.PrimaryKey)
     /** Database column user_id SqlType(VARCHAR), Length(32,true) */
     val userId: Rep[String] = column[String]("user_id", O.Length(32,varying=true))
-    /** Database column password SqlType(VARCHAR), Length(256,true) */
-    val password: Rep[String] = column[String]("password", O.Length(256,varying=true))
+    /** Database column password SqlType(VARCHAR), Length(64,true) */
+    val password: Rep[String] = column[String]("password", O.Length(64,varying=true))
+    /** Database column password_salt SqlType(VARCHAR), Length(256,true) */
+    val passwordSalt: Rep[String] = column[String]("password_salt", O.Length(256,varying=true))
     /** Database column name SqlType(VARCHAR), Length(32,true) */
     val name: Rep[String] = column[String]("name", O.Length(32,varying=true))
     /** Database column is_lock SqlType(BIT) */
