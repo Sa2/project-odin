@@ -9,7 +9,7 @@ object CustomConstraints extends CustomConstraints
 
 trait CustomConstraints {
 
-  private val userIdRegex = """^[a-zA-Z0-9\.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$""".r
+  private val userIdRegex = """^[a-zA-Z0-9\.!#$%&'*+/=?^_`{|}~-](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$""".r
   def userId: Constraint[String] = Constraint[String]("constraint.custom.userid") { e =>
     if ((e == null) || (e.trim.isEmpty)) Valid // use nonEmpty or custom nonEmpty constraints
     else userIdRegex.findFirstMatchIn(e)

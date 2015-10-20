@@ -16,7 +16,7 @@
                 @helper.CSRF.formField
                 <fieldset>
                     <div class="form-group">
-                        <input class="form-control" placeholder="UserId" name="userId" type="email" value="@loginForm("userId").value" autofocus>
+                        <input class="form-control" placeholder="UserId" name="userId" type="text" value="@loginForm("userId").value" autofocus>
                         @for(error <- loginForm("userId").errors) {
                         <p class="text-danger" style="margin: 0">@error.message</p>
                         }

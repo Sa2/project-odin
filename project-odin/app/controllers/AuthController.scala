@@ -2,6 +2,7 @@ package controllers
 
 import forms.LoginForm
 import jp.t2v.lab.play2.auth.LoginLogout
+import play.filters.csrf.{AddCSRFToken, CSRFCheck}
 import utils.security.AuthConfigLike
 import utils.validation.CustomConstraints
 
@@ -24,9 +25,36 @@ import models.services.UserServiceLike
 class AuthController @Inject()(val userService: UserServiceLike) extends Controller with LoginLogout with AuthConfigLike {
   import AuthController._
 
-  def index() = TODO
-  def login() = TODO
-  def logout() = TODO
+  def index() = Action { implicit request =>
+    Ok(views.html.auth.login(loginForm))
+  }
+
+  def login() = CSRFCheck {
+    Action.async { implicit request =>
+      loginForm.bindFromRequest.fold(
+        formWithErrors => {
+          Future.successful(BadRequest(views.html.auth.login(formWithErrors)))
+        },
+        form => {
+          userService.authenticate(form).flatMap {
+            user => user match {
+              case Some(user) =>
+                gotoLoginSucceeded(user.userId)
+              case _ =>
+                Future.successful(Unauthorized(views.html.auth.login(loginForm.fill(form)
+                  .withGlobalError("message", Messages("login.fail")))))
+            }
+          }
+        }
+      )
+    }
+  }
+
+  def logout() = CSRFCheck {
+    Action.async { implicit request =>
+      gotoLogoutSucceeded
+    }
+  }
 }
 
 object AuthController {
