@@ -3,5 +3,6 @@
 mysql-connector-java-**
 *.log
 *.dfmark
+_readme.txt
 
 lreverse-schema-dfclient.xml
