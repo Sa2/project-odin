@@ -15,5 +15,5 @@ before_script:
   - chmod +x ./opt/travis/travis_db_setup.sh
   - ./opt/travis/travis_db_setup.sh
 script:
-  - cd project-odin
+  - cd application/project-odin/
   - ./activator test
