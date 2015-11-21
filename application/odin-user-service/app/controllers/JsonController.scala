@@ -9,10 +9,8 @@ import play.api.mvc.{Action, Controller}
 import slick.driver.JdbcProfile
 import models.dao.Tables._
 import models.services._
-import slick.driver.MySQLDriver.api._
 
 import play.api.libs.json._
-import play.api.libs.json.Reads._
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 
 import scala.concurrent.Future
@@ -22,7 +20,7 @@ import scala.concurrent.Future
  */
 
 object JsonController {
-  case class UserForm(id: Int, userId: String, password: String, passwordSalt: String, name: String, roleId: Int, isLock: Boolean, registerDate: DateTime, updateDate: DateTime)
+  case class UserForm(id: Int, userId: String, password: String, name: String, roleId: Int, isLock: Boolean)
 
   // UsersRowをJSONに変換するためのWritesを定義
   implicit val usersRowWritesFormat = new Writes[UsersRow]{
@@ -31,7 +29,6 @@ object JsonController {
         "id"            -> user.id,
         "userId"        -> user.userId,
         "password"      -> user.password,
-        "passwordSalt"  -> user.passwordSalt,
         "name"          -> user.name,
         "roleId"        -> user.roleId,
         "isLock"        -> user.isLock,
@@ -59,7 +56,7 @@ class JsonController @Inject()(val dbConfigProvider: DatabaseConfigProvider, val
       Ok(Json.obj("user" -> user))
     }
   }
-  
+
   /**
    * ユーザー一覧取得
    */
@@ -77,11 +74,11 @@ class JsonController @Inject()(val dbConfigProvider: DatabaseConfigProvider, val
    */
   def create = Action.async(parse.json) { implicit rs =>
     rs.body.validate[UserForm].map { form =>
-      val registerDate = DateTime.now()
-      val user = UsersRow(form.id, form.userId, form.password, form.passwordSalt, form.name, form.roleId, form.isLock, DateTime.now(), DateTime.now())
-      db.run(Users += user).map { _ =>
+      Future {
+        userService.createUser(form)
         Ok(Json.obj("result" -> "success"))
       }
+
     }.recoverTotal { e =>
       Future {
         BadRequest(Json.obj("result" ->"failure", "error" -> JsError.toJson(e)))
