@@ -95,4 +95,9 @@ class JsonController @Inject()(val dbConfigProvider: DatabaseConfigProvider, val
    * ユーザ削除
    */
   def remove(id: Int) = TODO
+
+  /**
+    * ユーザをロックする
+    */
+  def lock(id: Int) = TODO
 }
