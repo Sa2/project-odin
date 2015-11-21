@@ -46,6 +46,10 @@ class UserService @Inject()(val dbConfigProvider: DatabaseConfigProvider, val me
     val user = UsersRow(form.id, form.userId, hashedPassword, passwordSalt, form.name, form.roleId, form.isLock, DateTime.now(), DateTime.now())
     db.run(Users += user).map { _ =>}
   }
+
+  def updateUser(id: Int) = {
+  }
+
 }
 
 

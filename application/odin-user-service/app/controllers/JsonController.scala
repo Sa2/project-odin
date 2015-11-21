@@ -89,7 +89,12 @@ class JsonController @Inject()(val dbConfigProvider: DatabaseConfigProvider, val
   /**
    * ユーザ更新
    */
-  def update(id: Int) = TODO
+  def update(id: Int) = Action.async { implicit rs =>
+    Future {
+      userService.updateUser(id)
+      Ok(Json.obj("message" -> "Unimplemented"))
+    }
+  }
 
   /**
    * ユーザ削除
