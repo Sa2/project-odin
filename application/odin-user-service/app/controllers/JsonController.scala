@@ -81,7 +81,6 @@ class JsonController @Inject()(val dbConfigProvider: DatabaseConfigProvider, val
         } else {
           BadRequest(Json.obj("result" ->"duplicate key error"))
         }
-
       }
     }.recoverTotal { e =>
       Future {
@@ -100,11 +99,11 @@ class JsonController @Inject()(val dbConfigProvider: DatabaseConfigProvider, val
         Ok(Json.obj("result" -> "success"))
       }
     }.recoverTotal { e =>
-        Future {
-          BadRequest(Json.obj("result" ->"failure", "error" -> JsError.toJson(e)))
-        }
+      Future {
+        BadRequest(Json.obj("result" ->"failure", "error" -> JsError.toJson(e)))
       }
     }
+  }
 
   /**
    * ユーザ削除
