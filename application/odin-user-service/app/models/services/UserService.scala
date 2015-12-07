@@ -9,13 +9,15 @@ import org.apache.commons.codec.digest.DigestUtils
 import org.joda.time.DateTime
 import play.api.db.slick.{HasDatabaseConfigProvider, DatabaseConfigProvider}
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.{JsObject, Json}
 import slick.driver.JdbcProfile
+import slick.driver.MySQLDriver._
 import slick.driver.MySQLDriver.api._
+
 
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 
-import scala.concurrent.Future
+import scala.concurrent.duration.Duration
+import scala.concurrent.{Await, Future}
 
 /**
  * Created by Sa2 on 2015/11/02.
@@ -23,13 +25,47 @@ import scala.concurrent.Future
 class UserService @Inject()(val dbConfigProvider: DatabaseConfigProvider, val messagesApi: MessagesApi) extends HasDatabaseConfigProvider[JdbcProfile] with I18nSupport {
   import UserService._
 
-  def getUser(id: Int): Future[UsersRow] = {
+  /**
+    * IDからユーザーを取得
+    *
+    * @param id ID
+    * @return
+    */
+  def getUserById(id: Int): Future[UsersRow] = {
     db.run(Users.filter(t => t.id === id).result.head)
   }
 
   /**
+    * ユーザーIDからユーザーを取得
+    *
+    * @param userId ユーザーID
+    * @return
+    */
+  def getUserByUserId(userId: String): Future[UsersRow] = {
+    db.run(Users.filter(t => t.userId === userId).result.head)
+  }
+
+  /**
+    * ユーザーIDが使用できるか確認する
+    *
+    * @param userId
+    * @return
+    */
+  def isAvailableUserId(userId: String): Boolean = {
+    val user: Future[UsersRow] = getUserByUserId(userId)
+
+    try {
+      val result = Await.result(user, Duration.Inf)
+      return false
+    } catch {
+      case e:Exception => return true
+    }
+  }
+
+  /**
    * ユーザー一覧を取得
-   * @return ユーザー一覧
+    *
+    * @return ユーザー一覧
    */
   def getUserList: Future[Seq[UsersRow]] = {
     db.run(Users.sortBy(t => t.id).result)
@@ -37,19 +73,24 @@ class UserService @Inject()(val dbConfigProvider: DatabaseConfigProvider, val me
 
   /**
     * ユーザーを作成
+    *
     * @param form ユーザーフォーム
     */
   def createUser(form: UserForm) = {
-    val registerDate = DateTime.now()
     val passwordSalt = createPasswordSalt
     val hashedPassword = hashAndStretch(form.password, passwordSalt, STRETCH_LOOP_COUNT)
-    val user = UsersRow(form.id, form.userId, hashedPassword, passwordSalt, form.name, form.roleId, form.isLock, DateTime.now(), DateTime.now())
-    db.run(Users += user).map { _ =>}
+    val user = UsersRow(0, form.userId, hashedPassword, passwordSalt, form.name, form.roleId, form.isLock, DateTime.now(), DateTime.now())
+    db.run(Users += user)
   }
 
-  def updateUser(id: Int) = {
+  def updateUser(form: UserForm) = {
+    // 既存ユーザー情報を取得してformと組み合わせた情報をupdateする
+    getUserById(form.id).map { currentUser =>
+      val newHashedPassword = hashAndStretch(form.password, currentUser.passwordSalt, STRETCH_LOOP_COUNT)
+      val editUser = UsersRow(form.id, form.userId, newHashedPassword, currentUser.passwordSalt, form.name, form.roleId, form.isLock, currentUser.registerDate, DateTime.now())
+      db.run(Users.filter(t => t.id === editUser.id.bind).update(editUser))
+    }
   }
-
 }
 
 

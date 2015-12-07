@@ -13,6 +13,6 @@ GET     /assets/*file               controllers.Assets.versioned(path="/public",
 GET         /json/alone/:id          controllers.JsonController.getUser(id: Int)
 GET         /json/list         controllers.JsonController.getUserList
 POST        /json/create       controllers.JsonController.create
-PUT         /json/update/:id   controllers.JsonController.update(id: Int)
-PUT         /json/lock/:id     controllers.JsonController.lock(id: Int)
-DELETE      /json/remove/:id   controllers.JsonController.remove(id: Int)
+POST        /json/update       controllers.JsonController.update
+POST        /json/lock/:id     controllers.JsonController.lock(id: Int)
+POST        /json/remove/:id   controllers.JsonController.remove(id: Int)

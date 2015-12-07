@@ -22,20 +22,20 @@ import scala.concurrent.Future
 object JsonController {
   case class UserForm(id: Int, userId: String, password: String, name: String, roleId: Int, isLock: Boolean)
 
-  // UsersRowをJSONに変換するためのWritesを定義
-  implicit val usersRowWritesFormat = new Writes[UsersRow]{
-    def writes(user: UsersRow): JsValue = {
-      Json.obj(
-        "id"            -> user.id,
-        "userId"        -> user.userId,
-        "password"      -> user.password,
-        "name"          -> user.name,
-        "roleId"        -> user.roleId,
-        "isLock"        -> user.isLock,
-        "registerDate"  -> user.registerDate,
-        "updateDate"    -> user.updateDate
-      )
-    }
+    // UsersRowをJSONに変換するためのWritesを定義
+    implicit val usersRowWritesFormat = new Writes[UsersRow]{
+      def writes(user: UsersRow): JsValue = {
+        Json.obj(
+          "id"            -> user.id,
+          "userId"        -> user.userId,
+          "password"      -> user.password,
+          "name"          -> user.name,
+          "roleId"        -> user.roleId,
+          "isLock"        -> user.isLock,
+          "registerDate"  -> user.registerDate,
+          "updateDate"    -> user.updateDate
+        )
+      }
   }
 
   implicit val userFormFormat = Json.format[UserForm]
@@ -50,7 +50,7 @@ class JsonController @Inject()(val dbConfigProvider: DatabaseConfigProvider, val
    */
   def getUser(id: Int) = Action.async { implicit rs =>
     // IDの昇順にすべてのユーザ情報を取得
-    val user = userService.getUser(id)
+    val user = userService.getUserById(id)
     user.map { user =>
       // ユーザの一覧をJSONで返す
       Ok(Json.obj("user" -> user))
@@ -75,10 +75,14 @@ class JsonController @Inject()(val dbConfigProvider: DatabaseConfigProvider, val
   def create = Action.async(parse.json) { implicit rs =>
     rs.body.validate[UserForm].map { form =>
       Future {
-        userService.createUser(form)
-        Ok(Json.obj("result" -> "success"))
-      }
+        if (userService.isAvailableUserId(form.userId)) {
+          userService.createUser(form)
+          Ok(Json.obj("result" -> "success"))
+        } else {
+          BadRequest(Json.obj("result" ->"duplicate key error"))
+        }
 
+      }
     }.recoverTotal { e =>
       Future {
         BadRequest(Json.obj("result" ->"failure", "error" -> JsError.toJson(e)))
@@ -89,12 +93,18 @@ class JsonController @Inject()(val dbConfigProvider: DatabaseConfigProvider, val
   /**
    * ユーザ更新
    */
-  def update(id: Int) = Action.async { implicit rs =>
-    Future {
-      userService.updateUser(id)
-      Ok(Json.obj("message" -> "Unimplemented"))
+  def update = Action.async(parse.json) { implicit rs =>
+    rs.body.validate[UserForm].map { form =>
+      Future {
+        userService.updateUser(form)
+        Ok(Json.obj("result" -> "success"))
+      }
+    }.recoverTotal { e =>
+        Future {
+          BadRequest(Json.obj("result" ->"failure", "error" -> JsError.toJson(e)))
+        }
+      }
     }
-  }
 
   /**
    * ユーザ削除
@@ -102,7 +112,7 @@ class JsonController @Inject()(val dbConfigProvider: DatabaseConfigProvider, val
   def remove(id: Int) = TODO
 
   /**
-    * ユーザをロックする
+    * ユーザロック
     */
   def lock(id: Int) = TODO
 }
