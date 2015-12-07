@@ -79,12 +79,12 @@ class JsonController @Inject()(val dbConfigProvider: DatabaseConfigProvider, val
           userService.createUser(form)
           Ok(Json.obj("result" -> "success"))
         } else {
-          BadRequest(Json.obj("result" ->"duplicate key error"))
+          BadRequest(Json.obj("result" -> "failure", "error" -> "duplicate key"))
         }
       }
     }.recoverTotal { e =>
       Future {
-        BadRequest(Json.obj("result" ->"failure", "error" -> JsError.toJson(e)))
+        BadRequest(Json.obj("result" -> "failure", "error" -> JsError.toJson(e)))
       }
     }
   }
