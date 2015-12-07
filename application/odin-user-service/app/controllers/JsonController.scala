@@ -2,7 +2,6 @@ package controllers
 
 import javax.inject.Inject
 
-import org.joda.time.DateTime
 import play.api.db.slick.{HasDatabaseConfigProvider, DatabaseConfigProvider}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, Controller}
