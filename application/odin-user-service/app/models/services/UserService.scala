@@ -58,7 +58,7 @@ class UserService @Inject()(val dbConfigProvider: DatabaseConfigProvider, val me
       val result = Await.result(user, Duration.Inf)
       return false
     } catch {
-      case e:UserServiceException => return true
+      case e:RuntimeException => return true
     }
   }
 
