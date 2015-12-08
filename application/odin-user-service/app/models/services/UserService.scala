@@ -83,6 +83,12 @@ class UserService @Inject()(val dbConfigProvider: DatabaseConfigProvider, val me
     db.run(Users += user)
   }
 
+  /**
+    * ユーザー情報を更新
+    *
+    * @param form ユーザーフォーム
+    * @return
+    */
   def updateUser(form: UserForm) = {
     // 既存ユーザー情報を取得してformと組み合わせた情報をupdateする
     getUserById(form.id).map { currentUser =>
