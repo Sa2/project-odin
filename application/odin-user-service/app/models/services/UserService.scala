@@ -97,6 +97,29 @@ class UserService @Inject()(val dbConfigProvider: DatabaseConfigProvider, val me
       db.run(Users.filter(t => t.id === editUser.id.bind).update(editUser))
     }
   }
+
+  /**
+    * ユーザー情報を削除
+    *
+    * @param id ID
+    * @return
+    */
+  def removeUser(id: Int) = {
+    // TODO : FKを張っているので子になるテーブルから関連データを削除する処理が必要
+    db.run(Users.filter(t => t.id === id.bind).delete)
+  }
+
+  /**
+    * ユーザーをロックする
+    * @param id
+    * @return
+    */
+  def lockUser(id: Int) = {
+    getUserById(id).map { targetUser =>
+      val lockedUser = UsersRow(targetUser.id, targetUser.userId, targetUser.password, targetUser.passwordSalt, targetUser.name, targetUser.roleId, true, targetUser.registerDate, DateTime.now())
+      db.run(Users.filter(t => t.id === targetUser.id.bind).update(targetUser))
+    }
+  }
 }
 
 

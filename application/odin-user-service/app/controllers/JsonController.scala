@@ -107,7 +107,12 @@ class JsonController @Inject()(val dbConfigProvider: DatabaseConfigProvider, val
   /**
    * ユーザ削除
    */
-  def remove(id: Int) = TODO
+  def remove(id: Int) = Action.async { implicit rs =>
+    Future {
+      userService.removeUser(id)
+      Ok(Json.obj("result" -> "success"))
+    }
+  }
 
   /**
     * ユーザロック
