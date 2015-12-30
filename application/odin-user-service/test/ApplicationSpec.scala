@@ -18,18 +18,5 @@ class ApplicationSpec extends Specification {
     "send 404 on a bad request" in new WithApplication{
       route(FakeRequest(GET, "/boum")) must beSome.which (status(_) == NOT_FOUND)
     }
-
-    
-    "Api call test /user/api/v1/alone/1" in new WithApplication{
-      val user = route(FakeRequest(GET, "/user/api/v1/alone/1")).get
-      val regexStr = ".*user1.*".r
-
-      status(user) must equalTo(OK)
-      contentType(user) must beSome.which(_ == "application/json")
-      user match {
-        case regexStr(_*) => true
-        case _ => false
-      }
-    }
   }
 }
