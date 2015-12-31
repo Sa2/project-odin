@@ -45,9 +45,9 @@ class JsonController @Inject()(val dbConfigProvider: DatabaseConfigProvider, val
   import JsonController._
 
   /**
-   * ユーザー取得
+   * IDからユーザー情報取得
    */
-  def getUser(id: Int) = Action.async { implicit rs =>
+  def getUserById(id: Int) = Action.async { implicit rs =>
     // IDの昇順にすべてのユーザ情報を取得
     val user = userService.getUserById(id)
     user.map { user =>
@@ -55,6 +55,11 @@ class JsonController @Inject()(val dbConfigProvider: DatabaseConfigProvider, val
       Ok(Json.obj("user" -> user))
     }
   }
+
+  /**
+    * ユーザーIDからユーザー情報取得
+    */
+  def getUserByUserId(userId: String) = TODO
 
   /**
    * ユーザー一覧取得
