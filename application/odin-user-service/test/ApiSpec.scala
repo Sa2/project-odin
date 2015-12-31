@@ -21,9 +21,9 @@ class ApiSpec extends Specification {
 
       status(user) must equalTo(OK)
       contentType(user) must beSome.which(_ == "application/json")
-      user match {
+      contentAsString(user) match {
         case regexStr(_*) => true
-        case _ => false
+        case _ => None.get
       }
     }
 
@@ -33,9 +33,9 @@ class ApiSpec extends Specification {
 
       status(users) must equalTo(OK)
       contentType(users) must beSome.which(_ == "application/json")
-      users match {
+      contentAsString(users) match {
         case regexStr(_*) => true
-        case _ => false
+        case _ => None.get
       }
     }
 
@@ -48,10 +48,28 @@ class ApiSpec extends Specification {
         "roleId"        -> 1,
         "isLock"        -> false
       )
+      val regexStr = ".*success.*".r
 
       val request = FakeRequest(POST, "/user/api/v1/create").withJsonBody(requestParam)
       val response = route(request).get
-      contentAsString(response) == "{\"result\":\"success\"}"
+      println(contentAsString(response))
+      contentAsString(response) match {
+        case regexStr(_*) => true
+        case _ => None.get
+      }
+    }
+
+    "Api call test /user/api/v1/fetch/userid/" + userName in new WithApplication {
+      val user = route(FakeRequest(GET, "/user/api/v1/fetch/userid/" + userName)).get
+      val regexTarget = ".*" + userName + ".*"
+      val regexStr = regexTarget.r
+
+      status(user) must equalTo(OK)
+      contentType(user) must beSome.which(_ == "application/json")
+      contentAsString(user) match {
+        case regexStr(_*) => true
+        case _ => None.get
+      }
     }
   }
 }
