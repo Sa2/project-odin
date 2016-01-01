@@ -10,10 +10,10 @@ GET     /assets/*file               controllers.Assets.versioned(path="/public",
 
 
 # JSON API
-GET         /user/api/v1/fetch/id/:id               controllers.JsonController.getUserById(id: Int)
-GET         /user/api/v1/fetch/userid/:userId       controllers.JsonController.getUserByUserId(userId: String)
-GET         /user/api/v1/fetch/list                 controllers.JsonController.getUserList
-POST        /user/api/v1/create                     controllers.JsonController.create
-POST        /user/api/v1/update                     controllers.JsonController.update
-POST        /user/api/v1/lock/:id                   controllers.JsonController.lock(id: Int)
-POST        /user/api/v1/remove/:id                 controllers.JsonController.remove(id: Int)
+GET         /user/api/v1/fetch/id/:id               controllers.UserApiController.getUserById(id: Int)
+GET         /user/api/v1/fetch/userid/:userId       controllers.UserApiController.getUserByUserId(userId: String)
+GET         /user/api/v1/fetch/list                 controllers.UserApiController.getUserList
+POST        /user/api/v1/create                     controllers.UserApiController.create
+POST        /user/api/v1/update                     controllers.UserApiController.update
+POST        /user/api/v1/lock/:id                   controllers.UserApiController.lock(id: Int)
+POST        /user/api/v1/remove/:id                 controllers.UserApiController.remove(id: Int)

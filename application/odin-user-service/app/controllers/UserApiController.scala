@@ -18,7 +18,7 @@ import scala.concurrent.Future
  * Created by Sa2 on 2015/11/02.
  */
 
-object JsonController {
+object UserApiController {
   case class UserForm(id: Int, userId: String, password: String, name: String, roleId: Int, isLock: Boolean)
 
     // UsersRowをJSONに変換するためのWritesを定義
@@ -40,9 +40,9 @@ object JsonController {
   implicit val userFormFormat = Json.format[UserForm]
 }
 
-class JsonController @Inject()(val dbConfigProvider: DatabaseConfigProvider, val messagesApi: MessagesApi, val userService: UserService)
+class UserApiController @Inject()(val dbConfigProvider: DatabaseConfigProvider, val messagesApi: MessagesApi, val userService: UserService)
   extends Controller with HasDatabaseConfigProvider[JdbcProfile] with I18nSupport {
-  import JsonController._
+  import UserApiController._
 
   /**
    * IDからユーザー情報取得

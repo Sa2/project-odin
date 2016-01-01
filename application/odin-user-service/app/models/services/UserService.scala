@@ -3,7 +3,7 @@ package models.services
 import java.util.UUID
 import javax.inject.Inject
 
-import controllers.JsonController.UserForm
+import controllers.UserApiController.UserForm
 import exception.UserServiceException
 import models.dao.Tables._
 import org.apache.commons.codec.digest.DigestUtils
