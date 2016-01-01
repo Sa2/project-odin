@@ -1,7 +1,7 @@
 import org.specs2.mutable._
 import org.specs2.runner._
 import org.junit.runner._
-import play.api.libs.json.{JsResult, Json}
+import play.api.libs.json.Json
 
 import play.api.test._
 import play.api.test.Helpers._
@@ -79,15 +79,50 @@ class ApiSpec extends Specification {
       }
     }
 
-    /* lockが未実装であるためコメント化 */
+    "Api call test /user/api/v1/update" in new WithApplication {
+      // idを取得
+      val userJson = route(FakeRequest(GET, "/user/api/v1/fetch/userid/" + userName)).get
+      status(userJson) must equalTo(OK)
+      val user: User = Json.parse(contentAsString(userJson)).validate[User].get
+
+      val updatedName = "更新したテストユーザー"
+      val requestParam = Json.obj(
+        "id"            -> user.id,
+        "userId"        -> user.userId,
+        "password"      -> user.password,
+        "name"          -> updatedName,
+        "roleId"        -> user.roleId,
+        "isLock"        -> user.isLock
+      )
+      val regexStr = ".*success.*".r
+      val request = FakeRequest(POST, "/user/api/v1/update").withJsonBody(requestParam)
+      val response = route(request).get
+      contentAsString(response) match {
+        case regexStr(_*) => true
+        case _ => None.get
+      }
+
+      Thread.sleep(100)
+
+      // update後のデータを確認する
+      val lockedUserJson = route(FakeRequest(GET, "/user/api/v1/fetch/userid/" + userName)).get
+      status(userJson) must equalTo(OK)
+      val lockedUser: User = Json.parse(contentAsString(lockedUserJson)).validate[User].get
+      val regexName = updatedName.r
+      lockedUser.name match {
+        case regexName(_*) => true
+        case _ => None.get
+      }
+    }
+
     "Api call test /user/api/v1/lock/" + userName in new WithApplication {
       // idを取得
       val userJson = route(FakeRequest(GET, "/user/api/v1/fetch/userid/" + userName)).get
       status(userJson) must equalTo(OK)
-      val user: JsResult[User] = Json.parse(contentAsString(userJson)).validate[User]
+      val user: User = Json.parse(contentAsString(userJson)).validate[User].get
 
       val regexStr = ".*success.*".r
-      val requestUri = "/user/api/v1/lock/" + user.get.id
+      val requestUri = "/user/api/v1/lock/" + user.id
       val request = FakeRequest(POST, requestUri)
       val response = route(request).get
       contentAsString(response) match {
@@ -100,9 +135,8 @@ class ApiSpec extends Specification {
       // lock後のデータを確認する
       val lockedUserJson = route(FakeRequest(GET, "/user/api/v1/fetch/userid/" + userName)).get
       status(userJson) must equalTo(OK)
-      val lockedUser: JsResult[User] = Json.parse(contentAsString(lockedUserJson)).validate[User]
-      println(lockedUser.get.isLock)
-      lockedUser.get.isLock match {
+      val lockedUser: User = Json.parse(contentAsString(lockedUserJson)).validate[User].get
+      lockedUser.isLock match {
         case true => true
         case _ => None.get
       }
@@ -112,11 +146,11 @@ class ApiSpec extends Specification {
       // idを取得
       val userJson = route(FakeRequest(GET, "/user/api/v1/fetch/userid/" + userName)).get
       status(userJson) must equalTo(OK)
-      val user: JsResult[User] = Json.parse(contentAsString(userJson)).validate[User]
+      val user: User = Json.parse(contentAsString(userJson)).validate[User].get
 
       // 削除したかを確認する
       val regexStr = ".*success.*".r
-      val requestUri = "/user/api/v1/remove/" + user.get.id
+      val requestUri = "/user/api/v1/remove/" + user.id
       val request = FakeRequest(POST, requestUri)
       val response = route(request).get
       contentAsString(response) match {
