@@ -1,16 +1,24 @@
 import org.specs2.mutable._
 import org.specs2.runner._
 import org.junit.runner._
-import play.api.libs.json.{Json, JsValue}
+import play.api.libs.json.{JsResult, Json}
 
 import play.api.test._
 import play.api.test.Helpers._
+
+
+case class User(id: Int, userId: String, password: String, name: String, roleId: Int, isLock: Boolean)
+
+object User {
+  implicit def jsonReads = Json.reads[User]
+}
 
 /**
   * Created by Sa2 on 2015/12/31.
   */
 @RunWith(classOf[JUnitRunner])
 class ApiSpec extends Specification {
+
   "Api" should {
 
     val userName = "fakeuser"
@@ -52,7 +60,6 @@ class ApiSpec extends Specification {
 
       val request = FakeRequest(POST, "/user/api/v1/create").withJsonBody(requestParam)
       val response = route(request).get
-      println(contentAsString(response))
       contentAsString(response) match {
         case regexStr(_*) => true
         case _ => None.get
@@ -67,6 +74,22 @@ class ApiSpec extends Specification {
       status(user) must equalTo(OK)
       contentType(user) must beSome.which(_ == "application/json")
       contentAsString(user) match {
+        case regexStr(_*) => true
+        case _ => None.get
+      }
+    }
+
+    "Api call test /user/api/v1/remove" + userName in new WithApplication {
+      // userId情報を取得
+      val userJson = route(FakeRequest(GET, "/user/api/v1/fetch/userid/" + userName)).get
+      status(userJson) must equalTo(OK)
+      val user: JsResult[User] = Json.parse(contentAsString(userJson)).validate[User]
+
+      val regexStr = ".*success.*".r
+      val requestUri: String = "/user/api/v1/remove/" + user.get.id
+      val request = FakeRequest(POST, requestUri)
+      val response = route(request).get
+      contentAsString(response) match {
         case regexStr(_*) => true
         case _ => None.get
       }
