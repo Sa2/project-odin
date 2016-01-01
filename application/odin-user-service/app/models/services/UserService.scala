@@ -117,7 +117,7 @@ class UserService @Inject()(val dbConfigProvider: DatabaseConfigProvider, val me
   def lockUser(id: Int) = {
     getUserById(id).map { targetUser =>
       val lockedUser = UsersRow(targetUser.id, targetUser.userId, targetUser.password, targetUser.passwordSalt, targetUser.name, targetUser.roleId, true, targetUser.registerDate, DateTime.now())
-      db.run(Users.filter(t => t.id === targetUser.id.bind).update(targetUser))
+      db.run(Users.filter(t => t.id === lockedUser.id.bind).update(lockedUser))
     }
   }
 }

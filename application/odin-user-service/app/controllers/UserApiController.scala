@@ -129,5 +129,10 @@ class UserApiController @Inject()(val dbConfigProvider: DatabaseConfigProvider, 
   /**
     * ユーザロック
     */
-  def lock(id: Int) = TODO
+  def lock(id: Int) = Action.async { implicit rs =>
+    Future {
+      userService.lockUser(id)
+      Ok(Json.obj("result" -> "success"))
+    }
+  }
 }
