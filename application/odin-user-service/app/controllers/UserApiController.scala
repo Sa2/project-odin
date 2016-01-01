@@ -52,7 +52,7 @@ class UserApiController @Inject()(val dbConfigProvider: DatabaseConfigProvider, 
     val user = userService.getUserById(id)
     user.map { user =>
       // ユーザの一覧をJSONで返す
-      Ok(Json.obj("user" -> user))
+      Ok(Json.toJson(user))
     }
   }
 
@@ -64,7 +64,7 @@ class UserApiController @Inject()(val dbConfigProvider: DatabaseConfigProvider, 
     val user = userService.getUserByUserId(userId)
     user.map { user =>
       // ユーザの一覧をJSONで返す
-      Ok(Json.obj("user" -> user))
+      Ok(Json.toJson(user))
     }
   }
 
