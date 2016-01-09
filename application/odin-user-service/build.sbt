@@ -12,13 +12,13 @@ libraryDependencies ++= Seq(
   filters,
   ws,
   specs2 % Test,
-  "com.typesafe.play" %% "play-slick" % "1.1.0",
-  "com.typesafe.play" %% "play-slick-evolutions" % "1.1.0",
-  "com.typesafe.slick" %% "slick-codegen" % "3.1.0",
+  "com.typesafe.play" %% "play-slick" % "1.1.1",
+  "com.typesafe.play" %% "play-slick-evolutions" % "1.1.1",
+  "com.typesafe.slick" %% "slick-codegen" % "3.1.1",
   "joda-time" % "joda-time" % "2.7",
   "org.joda" % "joda-convert" % "1.7",
   "com.github.tototoshi" %% "slick-joda-mapper" % "2.0.0",
-  "mysql" % "mysql-connector-java" % "5.1.35"
+  "mysql" % "mysql-connector-java" % "5.1.38"
 )
 
 resolvers += "scalaz-bintray" at "http://dl.bintray.com/scalaz/releases"
