@@ -12,10 +12,10 @@ lazy val web = (project in file("."))
     scalaVersion := "2.11.7",
     libraryDependencies ++= Seq(
       jdbc,
-      "com.typesafe.slick" %% "slick" % "3.0.0",
-      "com.typesafe.slick" %% "slick-codegen" % "3.0.0",
+      "com.typesafe.slick" %% "slick" % "3.1.1",
+      "com.typesafe.slick" %% "slick-codegen" % "3.1.1",
       "com.github.tototoshi" %% "slick-joda-mapper" % "2.0.0",
-      "mysql" % "mysql-connector-java" % "5.1.35"
+      "mysql" % "mysql-connector-java" % "5.1.38"
     ),
     slickCodegenDatabaseUrl := databaseUrl,
     slickCodegenDatabaseUser := databaseUser,
